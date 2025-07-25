@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aslan'ın AI Asistanı</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    :root {
+        --text-color: #ffffff;
+        --placeholder-color: #8e8e8e;
+        --primary-color: #000000;
+        --secondary-color: #1a1a1a;
+        --secondary-hover-color: #333333;
+        --scrollbar-color: #626a7f;
+        --accent-color: #92DC17;
+        --code-bg: #0d1117;
+        --code-border: #30363d;
+    }
+
+    body {
+        color: var(--text-color);
+        background: var(--primary-color);
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* User Info Bar */
+    .user-info-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--secondary-color);
+        border-bottom: 1px solid var(--secondary-hover-color);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1001;
+        font-size: 0.9rem;
+    }
+
+    .user-welcome {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+
+    .logout-btn {
+        background: transparent;
+        color: var(--text-color);
+        border: 1px solid var(--secondary-hover-color);
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background: var(--secondary-hover-color);
+        color: var(--accent-color);
+    }
+
+    /* Hamburger Menu */
+    .hamburger-menu {
+        position: fixed;
+        top: 60px;
+        left: 20px;
+        z-index: 1000;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        background: var(--secondary-color);
+        border: 1px solid var(--secondary-hover-color);
+    }
+
+    .hamburger-menu:hover {
+        background: var(--secondary-hover-color);
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        top: 50px;
+        left: -300px;
+        width: 300px;
+        height: calc(100vh - 50px);
+        background: var(--secondary-color);
+        border-right: 1px solid var(--secondary-hover-color);
+        transition: left 0.3s ease;
+        z-index: 999;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar.active .summary-section {
+        display: none;
+    }
+
+    .sidebar-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--secondary-hover-color);
+    }
+
+    .sidebar-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--accent-color);
+    }
+
+    .summary-section {
+        margin-bottom: 20px;
+    }
+
+    .summary-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-color);
+    }
+
+    .summary-content {
+        font-size: 0.9rem;
+        color: var(--placeholder-color);
+        line-height: 1.4;
+    }
+
+    .new-chat-btn {
+        width: 100%;
+        padding: 12px;
+        background: var(--accent-color);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s ease;
+        margin-bottom: 15px;
+    }
+
+    .new-chat-btn:hover {
+        background: #7bc914;
+    }
+
+    /* Previous Chats Section */
+    .previous-chats-section {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-bottom: 20px;
+        padding-right: 5px;
+        scrollbar-color: var(--scrollbar-color) transparent;
+    }
+
+    .previous-chats-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-color);
+    }
+
+    .chat-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .chat-list-item {
+        padding: 10px 15px;
+        margin-bottom: 8px;
+        background: var(--secondary-hover-color);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        font-size: 0.9rem;
+        color: var(--text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border: 1px solid transparent;
+    }
+
+    .chat-list-item:hover {
+        background: var(--accent-color);
+        color: #000;
+    }
+
+    .chat-list-item.active {
+        border: 1px solid var(--accent-color);
+        background: var(--secondary-hover-color);
+    }
+
+    /* Overlay */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        display: none;
+    }
+
+    .overlay.active {
+        display: block;
+    }
+
+    .container {
+        overflow-y: auto;
+        padding: 82px 0 60px;
+        max-height: calc(100vh - 127px);
+        scrollbar-color: var(--scrollbar-color) transparent;
+    }
+    
+    .container :where(.app-header, .message, .prompt-wrapper, .disclaimer-text) {
+        margin: 0 auto;
+        width: 100%;
+        padding: 0 20px;
+        max-width: 980px;
+    }
+    
+    .container .app-header {
+        margin-top: 2vh;
+    }
+
+    .app-header .heading {
+        font-size: 3rem;
+        width: fit-content;
+        background: linear-gradient(to right, var(--accent-color), #92DC17);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        letter-spacing: -0.05em;
+    }
+
+    /* Chat styling */
+    .container .chats-container {
+        display: flex;
+        gap: 20px;
+        flex-direction: column;
+    }
+
+    .chats-container .message {
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+    }
+    
+    .chats-container .bot-message .avatar {
+        height: 60px;
+        width: 60px;
+        flex-shrink: 0;
+        padding: 6px;
+        border-radius: 50%;
+        background: var(--secondary-color);
+        border: 1px solid var(--secondary-hover-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .chats-container .bot-message .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .chats-container .message .message-text {
+        padding: 12px 16px;
+        word-wrap: break-word;
+        white-space: pre-line;
+        line-height: 1.5;
+        color: var(--text-color);
+        flex: 1;
+    }
+    
+    .chats-container .bot-message {
+        margin: 9px auto;
+    }
+    
+    .chats-container .user-message {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    
+    .chats-container .user-message .message-text {
+        max-width: 75%;
+        border-radius: 13px 13px 3px 13px;
+        background: var(--secondary-color);
+    }
+
+    /* Code Block Styling */
+    .code-block-container {
+        margin: 15px 0;
+        border-radius: 8px;
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        overflow: hidden;
+    }
+
+    .code-block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: var(--secondary-color);
+        border-bottom: 1px solid var(--code-border);
+    }
+
+    .code-block-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .code-language {
+        font-size: 0.8rem;
+        color: var(--accent-color);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .code-filename {
+        font-size: 0.8rem;
+        color: var(--placeholder-color);
+    }
+
+    .code-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .code-btn {
+        padding: 4px 8px;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .copy-btn {
+        background: var(--secondary-hover-color);
+        color: var(--text-color);
+    }
+
+    .copy-btn:hover {
+        background: var(--accent-color);
+        color: #000;
+    }
+
+    .download-btn {
+        background: var(--accent-color);
+        color: #000;
+    }
+
+    .download-btn:hover {
+        background: #7bc914;
+    }
+
+    .code-content {
+        padding: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #e6edf3;
+        background: var(--code-bg);
+        overflow-x: auto;
+        white-space: pre;
+    }
+
+    /* Prompt container styling */
+    .prompt-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 16px 0;
+        background: var(--primary-color);
+    } 
+
+    .prompt-wrapper {
+        display: flex;
+        gap: 12px;
+        height: 56px;
+        align-items: center;
+    }
+
+    .prompt-form {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        border-radius: 130px;
+        background: var(--secondary-color);
+    }
+
+    .prompt-input {
+        height: 100%;
+        width: 100%;
+        background: none;
+        outline: none;
+        border: none;
+        font-size: 1rem;
+        padding-left: 24px;
+        color: var(--text-color);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .prompt-input::placeholder {
+        color: var(--placeholder-color);
+    }
+
+    .prompt-actions {
+        display: flex;
+        gap: 5px;
+        margin-right: 7px;
+        align-items: center;
+    }
+
+    .prompt-actions button {
+        width: 45px;
+        height: 45px;
+        border: none;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        color: var(--text-color);
+        background: var(--secondary-color);
+        transition: 0.3s ease;
+    }
+
+    .prompt-actions button:hover {
+        background: var(--secondary-hover-color);
+    }
+
+    #send-prompt-btn {
+        color: #000;
+        background: var(--accent-color) !important;
+    }
+
+    #send-prompt-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .disclaimer-text {
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 16px 20px 0;
+        color: var(--placeholder-color);
+    }
+
+    .loading {
+        opacity: 0.7;
+    }
+
+    .welcome-message {
+        text-align: center;
+        color: var(--placeholder-color);
+        font-style: italic;
+        margin: 20px 0;
+    }
+
+    .copy-success {
+        background: #28a745 !important;
+        color: white !important;
+    }
+
+    .chat-status {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: var(--secondary-color);
+        color: var(--accent-color);
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        border: 1px solid var(--secondary-hover-color);
+        z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 100px 0 100px;
+        }
+
+        .app-header .heading {
+            font-size: 2rem;
+            line-height: 1.4;
+        }
+
+        .sidebar {
+            width: 280px;
+        }
+
+        .code-block-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .code-actions {
+            align-self: flex-end;
+        }
+
+        .chat-status {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin: 10px auto;
+            display: block;
+            text-align: center;
+            width: fit-content;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <!-- User Info Bar -->
+    <div class="user-info-bar">
+        <div class="user-welcome" id="user-welcome">Hoş geldiniz!</div>
+        <button class="logout-btn" id="logout-btn">Çıkış</button>
+    </div>
+
+    <!-- Chat Status -->
+    <div class="chat-status" id="chat-status">
+        💾 Yükleniyor...
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        <span class="material-symbols-rounded">menu</span>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Aslan'ın AI Asistanı</div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-title">Sistem: Son Konuşma Özeti:</div>
+            <div class="summary-content" id="summary-content">
+                Özet yükleniyor...
+            </div>
+        </div>
+        
+        <button class="new-chat-btn" onclick="startNewChat()">Yeni Sohbet Başlat</button>
+        
+        <div class="previous-chats-section">
+            <div class="previous-chats-title">Geçmiş Sohbetler</div>
+            <ul class="chat-list" id="chat-list">
+                <li class="chat-list-item">Sohbetler yükleniyor...</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <div class="container">
+        <header class="app-header">
+            <h1 class="heading">Merhaba!</h1>
+        </header>
+
+        <div class="chats-container" id="chats-container">
+            <div class="welcome-message">
+                Güçlü hafıza sistemi ile konuşmaya başlayın. Tüm veriler chat_data/ klasöründe saklanır.
+            </div>
+        </div>
+
+        <div class="prompt-container">
+            <div class="prompt-wrapper">
+                <form class="prompt-form" id="prompt-form">
+                    <input type="text" placeholder="Bir şeyler sorun..." class="prompt-input" id="prompt-input" required>
+                    <div class="prompt-actions">
+                        <button type="submit" id="send-prompt-btn" class="material-symbols-rounded">arrow_upward</button>
+                    </div>
+                </form>
+            </div>
+            <p class="disclaimer-text">🧠 Güçlü hafıza sistemi - Kaldığınız yerden devam eder</p>
+        </div>
+    </div>
+
+    <script>
+    // Check authentication on page load
+    window.addEventListener('load', () => {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        
+        if (isLoggedIn !== 'true') {
+            // User is not logged in, redirect to index
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Display user welcome message
+        const userWelcome = document.getElementById('user-welcome');
+        if (user.email) {
+            userWelcome.textContent = `Hoş geldiniz, ${user.email}!`;
+        }
+    });
+
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    });
+
+    const chatsContainer = document.getElementById("chats-container");
+    const promptForm = document.getElementById("prompt-form");
+    const promptInput = document.getElementById("prompt-input");
+    const sendPromptBtn = document.getElementById("send-prompt-btn");
+    const summaryContent = document.getElementById("summary-content");
+    const chatStatus = document.getElementById("chat-status");
+    const chatList = document.getElementById("chat-list");
+
+    let isResponding = false;
+    let currentChatId = null;
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        if (sidebar.classList.contains('active')) {
+            loadSummary();
+            listPreviousChats();
+        }
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    function loadSummary() {
+        fetch('/get_summary')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    summaryContent.textContent = data.summary;
+                } else {
+                    summaryContent.textContent = 'Özet yüklenemedi';
+                }
+            })
+            .catch(error => {
+                console.error('Özet yüklenirken hata:', error);
+                summaryContent.textContent = 'Özet yüklenemedi';
+            });
+    }
+
+    function listPreviousChats() {
+        fetch('/list_chats')
+            .then(response => response.json())
+            .then(data => {
+                chatList.innerHTML = '';
+                if (data.success && data.chats.length > 0) {
+                    data.chats.forEach(chat => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('chat-list-item');
+                        listItem.textContent = `Sohbet ${chat.id}: ${chat.summary}`;
+                        listItem.onclick = () => loadSpecificChat(chat.id);
+                        if (chat.id === currentChatId) {
+                            listItem.classList.add('active');
+                        }
+                        chatList.appendChild(listItem);
+                    });
+                } else {
+                    chatList.innerHTML = '<li class="chat-list-item">Geçmiş sohbet bulunamadı.</li>';
+                }
+            })
+            .catch(error => {
+                console.error('Geçmiş sohbetler yüklenirken hata:', error);
+                chatList.innerHTML = '<li class="chat-list-item">Sohbetler yüklenemedi.</li>';
+            });
+    }
+
+    function loadSpecificChat(chatId) {
+        fetch(`/load_chat/${chatId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentChatId = data.chat_id;
+                    
+                    const welcomeMsg = chatsContainer.querySelector('.welcome-message');
+                    if (welcomeMsg) {
+                        welcomeMsg.remove();
+                    }
+
+                    chatsContainer.innerHTML = '';
+
+                    if (data.history.length > 0) {
+                        data.history.forEach(msg => {
+                            if (msg.role === 'user') {
+                                addMessage('user', msg.content);
+                            } else {
+                                const processedContent = msg.processed_content || msg.content;
+                                const codeBlocks = msg.code_blocks || [];
+                                addMessage('bot', processedContent, codeBlocks);
+                            }
+                        });
+                        chatStatus.textContent = `💾 Sohbet Yüklendi (chat_${currentChatId}, ${data.history.length} mesaj)`;
+                    } else {
+                        chatsContainer.innerHTML = '<div class="welcome-message">Yeni bir sohbet başlatıldı veya mevcut sohbet boş.</div>';
+                        chatStatus.textContent = `🆕 Yeni Sohbet Başladı (chat_${currentChatId})`;
+                    }
+                    
+                    closeSidebar();
+                    loadSummary();
+                    listPreviousChats();
+                } else {
+                    alert('Sohbet yüklenirken hata oluştu: ' + (data.error || 'Bilinmeyen hata'));
+                    chatStatus.textContent = '❌ Yükleme Hatası';
+                }
+            })
+            .catch(error => {
+                console.error('Sohbet yüklenirken hata:', error);
+                alert('Sohbet yüklenirken hata oluştu');
+                chatStatus.textContent = '❌ Bağlantı Hatası';
+            });
+    }
+
+    function startNewChat() {
+        if (confirm('Yeni bir sohbet başlatmak istediğinizden emin misiniz? Mevcut sohbet hafızaya kaydedilecek.')) {
+            fetch('/new_chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    currentChatId = data.new_chat_id;
+                    chatsContainer.innerHTML = '<div class="welcome-message">Yeni sohbet başladı! Önceki sohbet hafızaya kaydedildi.</div>';
+                    summaryContent.textContent = 'Yeni sohbet başladı...';
+                    closeSidebar();
+                    chatStatus.textContent = `🆕 Yeni Sohbet Başladı (chat_${currentChatId})`;
+                    listPreviousChats();
+                } else {
+                    alert('Yeni sohbet başlatılırken hata oluştu: ' + (data.error || 'Bilinmeyen hata'));
+                }
+            })
+            .catch(error => {
+                console.error('Yeni sohbet başlatılırken hata:', error);
+                alert('Yeni sohbet başlatılırken hata oluştu');
+            });
+        }
+    }
+
+    function createMsgElement(content, ...classes) {
+        const div = document.createElement("div");
+        div.classList.add("message", ...classes);
+        div.innerHTML = content;
+        return div;
+    }
+
+    function createCodeBlock(codeBlock) {
+        return `
+            <div class="code-block-container">
+                <div class="code-block-header">
+                    <div class="code-block-info">
+                        <span class="code-language">${codeBlock.language}</span>
+                        <span class="code-filename">${codeBlock.filename}</span>
+                    </div>
+                    <div class="code-actions">
+                        <button class="code-btn copy-btn" onclick="copyCode('${codeBlock.id}')">
+                            <span class="material-symbols-rounded" style="font-size: 14px;">content_copy</span>
+                            Kopyala
+                        </button>
+                        <button class="code-btn download-btn" onclick="downloadCode('${codeBlock.id}', '${codeBlock.filename}')">
+                            <span class="material-symbols-rounded" style="font-size: 14px;">download</span>
+                            İndir
+                        </button>
+                    </div>
+                </div>
+                <div class="code-content" id="${codeBlock.id}">${escapeHtml(codeBlock.content)}</div>
+            </div>
+        `;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function scrollToBottom() {
+        const container = document.querySelector(".container");
+        container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
+
+    function addMessage(sender, text, codeBlocks = []) {
+        const welcomeMsg = chatsContainer.querySelector('.welcome-message');
+        if (welcomeMsg) {
+            welcomeMsg.remove();
+        }
+
+        if (sender === 'user') {
+            const userMsgHTML = `<p class="message-text">${escapeHtml(text)}</p>`;
+            const userMsgDiv = createMsgElement(userMsgHTML, "user-message");
+            chatsContainer.appendChild(userMsgDiv);
+        } else {
+            let processedText = text;
+            let codeBlocksHTML = '';
+            
+            codeBlocks.forEach((codeBlock, index) => {
+                const placeholder = `[CODE_BLOCK_${index}]`;
+                if (processedText.includes(placeholder)) {
+                    processedText = processedText.replace(placeholder, createCodeBlock(codeBlock));
+                } else {
+                    codeBlocksHTML += createCodeBlock(codeBlock);
+                }
+            });
+            
+            const botMsgHTML = `
+                <div class="avatar">
+                    <img src="ai.png" alt="AI" onerror="this.outerHTML='<div style=\\'font-size:24px;color:var(--accent-color)\\'>🤖</div>'">
+                </div>
+                <div class="message-content">
+                    ${processedText ? `<p class="message-text">${escapeHtml(processedText)}</p>` : ''}
+                    ${codeBlocksHTML}
+                </div>
+            `;
+            const botMsgDiv = createMsgElement(botMsgHTML, "bot-message");
+            chatsContainer.appendChild(botMsgDiv);
+        }
+        scrollToBottom();
+    }
+
+    function copyCode(codeId) {
+        const codeElement = document.getElementById(codeId);
+        const text = codeElement.textContent;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const copyBtn = codeElement.parentElement.querySelector('.copy-btn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<span class="material-symbols-rounded" style="font-size: 14px;">check</span>Kopyalandı!';
+            copyBtn.classList.add('copy-success');
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.classList.remove('copy-success');
+            }, 2000);
+        }).catch(err => {
+            console.error('Kopyalama hatası:', err);
+            alert('Kopyalama başarısız!');
+        });
+    }
+
+    function downloadCode(codeId, filename) {
+        const codeElement = document.getElementById(codeId);
+        const text = codeElement.textContent;
+        
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+
+    function typingEffect(text, textElement, codeBlocks = []) {
+        textElement.textContent = "";
+        const words = text.split(" ");
+        let wordIndex = 0;
+
+        const typingInterval = setInterval(() => {
+            if (wordIndex < words.length) {
+                textElement.textContent += (wordIndex === 0 ? "" : " ") + words[wordIndex++];
+                scrollToBottom();
+            } else {
+                clearInterval(typingInterval);
+                
+                if (codeBlocks.length > 0) {
+                    const messageContent = textElement.parentElement;
+                    codeBlocks.forEach((codeBlock, index) => {
+                        const placeholder = `[CODE_BLOCK_${index}]`;
+                        if (!text.includes(placeholder)) {
+                            messageContent.innerHTML += createCodeBlock(codeBlock);
+                        }
+                    });
+                }
+                
+                isResponding = false;
+                sendPromptBtn.disabled = false;
+                promptInput.disabled = false;
+                scrollToBottom();
+            }
+        }, 50);
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const userMessage = promptInput.value.trim();
+        if (!userMessage || isResponding) return;
+        
+        isResponding = true;
+        sendPromptBtn.disabled = true;
+        promptInput.disabled = true;
+        
+        addMessage('user', userMessage);
+        promptInput.value = "";
+        
+        chatStatus.textContent = '🤔 Düşünüyor...';
+        
+        const botMsgHTML = `
+            <div class="avatar">
+                <img src="ai.png" alt="AI" onerror="this.outerHTML='<div style=\\'font-size:24px;color:var(--accent-color)\\'>🤖</div>'">
+            </div>
+            <div class="message-content">
+                <p class="message-text">Düşünüyor...</p>
+            </div>
+        `;
+        const botMsgDiv = createMsgElement(botMsgHTML, "bot-message", "loading");
+        chatsContainer.appendChild(botMsgDiv);
+        scrollToBottom();
+        
+        fetch('/send_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const textElement = botMsgDiv.querySelector('.message-text');
+            botMsgDiv.classList.remove('loading');
+            
+            if (data.success) {
+                chatStatus.textContent = `💾 Hafızaya Kaydedildi (chat_${currentChatId})`;
+                
+                if (data.response.trim() || (data.code_blocks && data.code_blocks.length > 0)) {
+                    typingEffect(data.response, textElement, data.code_blocks || []);
+                } else {
+                    textElement.textContent = 'Yanıt alınamadı.';
+                    isResponding = false;
+                    sendPromptBtn.disabled = false;
+                    promptInput.disabled = false;
+                    scrollToBottom();
+                }
+            } else {
+                textElement.textContent = 'Hata: ' + (data.error || 'Bilinmeyen hata');
+                textElement.style.color = '#d62939';
+                isResponding = false;
+                sendPromptBtn.disabled = false;
+                promptInput.disabled = false;
+                chatStatus.textContent = '❌ Hata Oluştu';
+            }
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            const textElement = botMsgDiv.querySelector('.message-text');
+            textElement.textContent = 'Bağlantı hatası oluştu';
+            textElement.style.color = '#d62939';
+            botMsgDiv.classList.remove('loading');
+            isResponding = false;
+            sendPromptBtn.disabled = false;
+            promptInput.disabled = false;
+            chatStatus.textContent = '❌ Bağlantı Hatası';
+        });
+    }
+
+    promptForm.addEventListener("submit", handleFormSubmit);
+    
+    promptInput.addEventListener("input", () => {
+        sendPromptBtn.style.opacity = promptInput.value.trim() ? "1" : "0.5";
+    });
+
+    // Load initial chat on page load
+    window.addEventListener('load', () => {
+        fetch('/load_chat/' + (currentChatId || 1))
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadSpecificChat(data.chat_id);
+                } else {
+                    console.error("Initial chat load failed:", data.error);
+                    chatsContainer.innerHTML = '<div class="welcome-message">Güçlü hafıza sistemi ile konuşmaya başlayın. Tüm veriler chat_data/ klasöründe saklanır.</div>';
+                    chatStatus.textContent = '❌ Yükleme Hatası';
+                }
+            })
+            .catch(error => {
+                console.error("Initial chat load network error:", error);
+                chatsContainer.innerHTML = '<div class="welcome-message">Bağlantı hatası oluştu. Sunucunun çalıştığından emin olun.</div>';
+                chatStatus.textContent = '❌ Bağlantı Hatası';
+            });
+    });
+    </script>
+</body>
+</html>
