@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express")
 const path = require("path")
 const fs = require("fs").promises
@@ -20,13 +21,13 @@ const PORT = process.env.PORT || 5000
 
 // Firebase konfigürasyonu - Environment Variables ile
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY || "AIzaSyA9DB6N0ptGaqTC4FbF9mVaVKH9T-DLgXk",
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "terapi-8591e.firebaseapp.com",
-  projectId: process.env.FIREBASE_PROJECT_ID || "terapi-8591e",
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "terapi-8591e.appspot.com",
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "257898873792",
-  appId: process.env.FIREBASE_APP_ID || "1:257898873792:web:7d4fa240665cb2f44b7e25",
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-NSB2KFMKV5",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 }
 
 // Firebase'i başlat
@@ -34,7 +35,7 @@ const firebaseApp = initializeApp(firebaseConfig)
 const auth = getAuth(firebaseApp)
 
 // Google Generative AI konfigürasyonu - Environment Variable ile
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || "AIzaSyCHUtQYTTYFpTrCqfhdWXslJVRDYeodKik")
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
 // Sabitler
