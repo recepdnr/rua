@@ -500,57 +500,6 @@
         z-index: 1000;
     }
 
-    /* Bottom User Profile Bar */
-    .bottom-profile-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--secondary-color);
-        border-top: 1px solid var(--secondary-hover-color);
-        padding: 10px 20px;
-        display: none;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 1001;
-    }
-
-    .bottom-profile-bar.active {
-        display: flex;
-    }
-
-    .profile-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .profile-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--accent-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        color: #000;
-        font-weight: bold;
-    }
-
-    .profile-email {
-        font-size: 0.9rem;
-    }
-
-    .more-options-btn {
-        background: transparent;
-        border: none;
-        color: var(--text-color);
-        cursor: pointer;
-        font-size: 1.2rem;
-        padding: 5px;
-    }
-
     @media (max-width: 768px) {
         .container {
             padding: 100px 0 100px;
@@ -603,20 +552,6 @@
     <!-- Hamburger Menu -->
     <div class="hamburger-menu" onclick="toggleSidebar()">
         <span class="material-symbols-rounded">menu</span>
-    </div>
-
-    <!-- More Options Button (Three Dots) -->
-    <button class="more-options-btn" id="more-options-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 1002;">
-        <span class="material-symbols-rounded">more_vert</span>
-    </button>
-
-    <!-- Bottom Profile Bar -->
-    <div class="bottom-profile-bar" id="bottom-profile-bar">
-        <div class="profile-info">
-            <div class="profile-avatar" id="profile-avatar">U</div>
-            <div class="profile-email" id="profile-email">kullanici@example.com</div>
-        </div>
-        <button class="logout-btn" id="bottom-logout-btn">Çıkış</button>
     </div>
 
     <!-- Sidebar -->
@@ -683,17 +618,8 @@
         
         // Display user welcome message
         const userWelcome = document.getElementById('user-welcome');
-        const profileEmail = document.getElementById('profile-email');
-        const profileAvatar = document.getElementById('profile-avatar');
-        
         if (user.email) {
             userWelcome.textContent = `Hoş geldiniz, ${user.email}!`;
-            profileEmail.textContent = user.email;
-            
-            // Create avatar from first letter of email
-            if (user.email.length > 0) {
-                profileAvatar.textContent = user.email.charAt(0).toUpperCase();
-            }
         }
     });
 
@@ -704,21 +630,6 @@
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
-    });
-
-    // Bottom logout button
-    document.getElementById('bottom-logout-btn').addEventListener('click', () => {
-        if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
-        }
-    });
-
-    // Toggle bottom profile bar
-    document.getElementById('more-options-btn').addEventListener('click', () => {
-        const bottomProfileBar = document.getElementById('bottom-profile-bar');
-        bottomProfileBar.classList.toggle('active');
     });
 
     const chatsContainer = document.getElementById("chats-container");
