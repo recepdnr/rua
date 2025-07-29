@@ -1,4 +1,10 @@
-require('dotenv').config();
+// Safely load dotenv - Production ortamında dotenv olmayabilir
+try {
+  require("dotenv").config()
+} catch (error) {
+  console.log("dotenv not found, using environment variables directly")
+}
+
 const express = require("express")
 const path = require("path")
 const fs = require("fs").promises
@@ -27,7 +33,7 @@ const firebaseConfig = {
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 }
 
 // Firebase'i başlat
@@ -48,10 +54,21 @@ const SUMMARY_PROMPT = `Önceki konuşmalarımızın özetini yap ve ana konular
 
 // Middleware'ler - Production için optimize edilmiş CORS
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? [process.env.FRONTEND_URL, "https://*.onrender.com"]
-      : ["http://localhost:5000", "http://127.0.0.1:5000"],
+  origin: (origin, callback) => {
+    // Render.com deployment için
+    if (process.env.NODE_ENV === "production") {
+      // Production'da tüm origin'lere izin ver (güvenlik için daha sonra kısıtlanabilir)
+      callback(null, true)
+    } else {
+      // Development ortamı
+      const allowedOrigins = ["http://localhost:5000", "http://127.0.0.1:5000"]
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error("Not allowed by CORS"))
+      }
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
 }
@@ -68,6 +85,7 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
+    firebase_project: firebaseConfig.projectId || "not_configured",
   })
 })
 
