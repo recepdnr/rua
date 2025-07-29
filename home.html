@@ -33,10 +33,31 @@
         font-family: 'Inter', sans-serif;
     }
 
+    /* User Info Bar (Top) - Modified to hide old elements */
+    .user-info-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--secondary-color);
+        border-bottom: 1px solid var(--secondary-hover-color);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: flex-end; /* Align content to the right if old elements are hidden */
+        align-items: center;
+        z-index: 1001;
+        font-size: 0.9rem;
+    }
+
+    .user-info-bar .user-welcome,
+    .user-info-bar .logout-btn {
+        display: none; /* Hide old elements */
+    }
+
     /* Hamburger Menu */
     .hamburger-menu {
         position: fixed;
-        top: 20px;
+        top: 60px;
         left: 20px;
         z-index: 1000;
         cursor: pointer;
@@ -53,10 +74,10 @@
     /* Sidebar */
     .sidebar {
         position: fixed;
-        top: 0;
+        top: 50px;
         left: -300px;
         width: 300px;
-        height: 100vh;
+        height: calc(100vh - 50px);
         background: var(--secondary-color);
         border-right: 1px solid var(--secondary-hover-color);
         transition: left 0.3s ease;
@@ -166,117 +187,6 @@
         background: var(--secondary-hover-color);
     }
 
-    /* User Profile Strip */
-    .user-profile-strip {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--secondary-color);
-        border-top: 1px solid var(--secondary-hover-color);
-        padding: 12px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 1001;
-    }
-
-    .user-profile-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-        padding: 8px 12px;
-        border-radius: 8px;
-        transition: background 0.3s ease;
-    }
-
-    .user-profile-info:hover {
-        background: var(--secondary-hover-color);
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--accent-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        color: #000;
-        font-size: 1.1rem;
-    }
-
-    .user-name {
-        font-weight: 600;
-        color: var(--text-color);
-        font-size: 0.95rem;
-    }
-
-    .menu-dots {
-        cursor: pointer;
-        padding: 8px;
-        border-radius: 50%;
-        transition: background 0.3s ease;
-        color: var(--text-color);
-    }
-
-    .menu-dots:hover {
-        background: var(--secondary-hover-color);
-    }
-
-    /* Profile Menu */
-    .profile-menu {
-        position: fixed;
-        bottom: 70px;
-        right: 20px;
-        background: var(--secondary-color);
-        border: 1px solid var(--secondary-hover-color);
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        z-index: 1002;
-        min-width: 150px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(10px);
-        transition: all 0.3s ease;
-    }
-
-    .profile-menu.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-    .profile-menu-item {
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: var(--text-color);
-        font-size: 0.9rem;
-    }
-
-    .profile-menu-item:hover {
-        background: var(--secondary-hover-color);
-    }
-
-    .profile-menu-item:first-child {
-        border-radius: 8px 8px 0 0;
-    }
-
-    .profile-menu-item:last-child {
-        border-radius: 0 0 8px 8px;
-        color: #ff4757;
-    }
-
-    .profile-menu-item:last-child:hover {
-        background: rgba(255, 71, 87, 0.1);
-    }
-
     /* Overlay */
     .overlay {
         position: fixed;
@@ -295,7 +205,7 @@
 
     .container {
         overflow-y: auto;
-        padding: 82px 0 120px;
+        padding: 82px 0 60px;
         max-height: calc(100vh - 127px);
         scrollbar-color: var(--scrollbar-color) transparent;
     }
@@ -466,7 +376,7 @@
     /* Prompt container styling */
     .prompt-container {
         position: fixed;
-        bottom: 60px;
+        bottom: 0;
         left: 0;
         width: 100%;
         padding: 16px 0;
@@ -478,10 +388,6 @@
         gap: 12px;
         height: 56px;
         align-items: center;
-        margin: 0 auto;
-        width: 100%;
-        padding: 0 20px;
-        max-width: 980px;
     }
 
     .prompt-form {
@@ -567,7 +473,7 @@
 
     .chat-status {
         position: fixed;
-        top: 20px;
+        top: 70px;
         right: 20px;
         background: var(--secondary-color);
         color: var(--accent-color);
@@ -578,9 +484,91 @@
         z-index: 1000;
     }
 
+    /* User Profile and Dropdown Menu (Bottom Left) */
+    .user-profile-menu {
+        position: fixed;
+        bottom: 20px; /* Adjust as needed */
+        left: 20px; /* Adjust as needed */
+        z-index: 1002;
+        background: var(--secondary-color);
+        border: 1px solid var(--secondary-hover-color);
+        border-radius: 10px;
+        padding: 10px 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-profile-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer; /* Make the whole info area clickable for the dropdown */
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent-color); /* Placeholder background */
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 0.95rem;
+    }
+
+    .more-options-icon {
+        font-size: 24px;
+        color: var(--placeholder-color);
+        cursor: pointer;
+        margin-left: auto; /* Push to the right */
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        bottom: calc(100% + 10px); /* Position above the trigger */
+        left: 0;
+        background: var(--secondary-color);
+        border: 1px solid var(--secondary-hover-color);
+        border-radius: 8px;
+        min-width: 150px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: none; /* Hidden by default */
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .dropdown-menu.active {
+        display: flex;
+    }
+
+    .dropdown-item {
+        padding: 10px 15px;
+        color: var(--text-color);
+        cursor: pointer;
+        transition: background 0.2s ease;
+        font-size: 0.9rem;
+    }
+
+    .dropdown-item:hover {
+        background: var(--secondary-hover-color);
+        color: var(--accent-color);
+    }
+
     @media (max-width: 768px) {
         .container {
-            padding: 100px 0 140px;
+            padding: 100px 0 100px;
         }
 
         .app-header .heading {
@@ -612,8 +600,10 @@
             width: fit-content;
         }
 
-        .user-profile-strip {
-            padding: 10px 15px;
+        .user-profile-menu {
+            bottom: 10px;
+            left: 10px;
+            padding: 8px 12px;
         }
 
         .user-avatar {
@@ -623,13 +613,32 @@
         }
 
         .user-name {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .more-options-icon {
+            font-size: 20px;
+        }
+
+        .dropdown-menu {
+            min-width: 120px;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            font-size: 0.8rem;
         }
     }
     </style>
 </head>
 
 <body>
+    <!-- User Info Bar (Top) - Now empty, but kept for structure -->
+    <div class="user-info-bar">
+        <div class="user-welcome" id="user-welcome"></div>
+        <button class="logout-btn" id="logout-btn"></button>
+    </div>
+
     <!-- Chat Status -->
     <div class="chat-status" id="chat-status">
         💾 Yükleniyor...
@@ -666,29 +675,6 @@
     <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-    <!-- User Profile Strip -->
-    <div class="user-profile-strip">
-        <div class="user-profile-info" id="user-profile-info">
-            <div class="user-avatar" id="user-avatar">U</div>
-            <div class="user-name" id="user-name">Kullanıcı</div>
-        </div>
-        <div class="menu-dots" id="menu-dots">
-            <span class="material-symbols-rounded">more_vert</span>
-        </div>
-    </div>
-
-    <!-- Profile Menu -->
-    <div class="profile-menu" id="profile-menu">
-        <div class="profile-menu-item" onclick="openSettings()">
-            <span class="material-symbols-rounded">settings</span>
-            Ayarlar
-        </div>
-        <div class="profile-menu-item" onclick="logout()">
-            <span class="material-symbols-rounded">logout</span>
-            Çıkış Yap
-        </div>
-    </div>
-
     <div class="container">
         <header class="app-header">
             <h1 class="heading">Merhaba!</h1>
@@ -713,8 +699,35 @@
         </div>
     </div>
 
+    <!-- User Profile and Dropdown Menu (Bottom Left) -->
+    <div class="user-profile-menu" id="user-profile-menu">
+        <div class="user-profile-info">
+            <div class="user-avatar" id="user-avatar"></div>
+            <span class="user-name" id="display-user-name">Kullanıcı</span>
+            <span class="material-symbols-rounded more-options-icon" id="more-options-btn">more_vert</span>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <div class="dropdown-item" id="settings-option">Ayarlar</div>
+            <div class="dropdown-item" id="logout-option-bottom">Çıkış</div>
+        </div>
+    </div>
+
     <script>
-    // Check authentication on page load
+    // New elements for user profile and dropdown
+    const userProfileMenu = document.getElementById('user-profile-menu');
+    const moreOptionsBtn = document.getElementById('more-options-btn');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const displayUserName = document.getElementById('display-user-name');
+    const userAvatar = document.getElementById('user-avatar');
+    const settingsOption = document.getElementById('settings-option');
+    const logoutOptionBottom = document.getElementById('logout-option-bottom');
+
+    // Function to get first letter of name for avatar
+    function getFirstLetter(name) {
+        return name ? name.charAt(0).toUpperCase() : 'U'; // 'U' for User if no name
+    }
+
+    // Check authentication and update user info on page load
     window.addEventListener('load', () => {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -725,55 +738,57 @@
             return;
         }
         
-        // Display user info in profile strip
-        const userAvatar = document.getElementById('user-avatar');
-        const userName = document.getElementById('user-name');
-        
-        if (user.name) {
-            userName.textContent = user.name;
-            userAvatar.textContent = user.name.charAt(0).toUpperCase();
-        } else if (user.email) {
-            userName.textContent = user.email.split('@')[0];
-            userAvatar.textContent = user.email.charAt(0).toUpperCase();
-        }
+        // Display user name and avatar
+        let userName = user.name || user.email || 'Kullanıcı';
+        displayUserName.textContent = userName;
+        userAvatar.textContent = getFirstLetter(userName);
+
+        // Hide the old user-info-bar elements (they are now empty divs in HTML)
+        const oldUserWelcome = document.getElementById('user-welcome');
+        const oldLogoutBtn = document.getElementById('logout-btn');
+        if (oldUserWelcome) oldUserWelcome.style.display = 'none';
+        if (oldLogoutBtn) oldLogoutBtn.style.display = 'none';
     });
 
-    // Profile menu functionality
-    const menuDots = document.getElementById('menu-dots');
-    const profileMenu = document.getElementById('profile-menu');
-    const userProfileInfo = document.getElementById('user-profile-info');
-
-    menuDots.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileMenu.classList.toggle('active');
-    });
-
-    userProfileInfo.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileMenu.classList.toggle('active');
-    });
-
-    // Close profile menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!profileMenu.contains(e.target) && !menuDots.contains(e.target) && !userProfileInfo.contains(e.target)) {
-            profileMenu.classList.remove('active');
-        }
-    });
-
-    // Settings function (placeholder)
-    function openSettings() {
-        profileMenu.classList.remove('active');
-        alert('Ayarlar sayfası yakında eklenecek!');
+    // Toggle dropdown menu
+    if (moreOptionsBtn) {
+        moreOptionsBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent click from closing immediately
+            if (dropdownMenu) {
+                dropdownMenu.classList.toggle('active');
+            }
+        });
     }
 
-    // Logout functionality
-    function logout() {
-        if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('user');
-            window.location.href = 'index.html';
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+        if (userProfileMenu && !userProfileMenu.contains(event.target)) {
+            if (dropdownMenu) {
+                dropdownMenu.classList.remove('active');
+            }
         }
-        profileMenu.classList.remove('active');
+    });
+
+    // Settings option (placeholder)
+    if (settingsOption) {
+        settingsOption.addEventListener('click', () => {
+            alert('Ayarlar sayfasına yönlendiriliyor...');
+            if (dropdownMenu) {
+                dropdownMenu.classList.remove('active');
+            }
+            // Implement actual settings navigation here
+        });
+    }
+
+    // Logout functionality (reusing existing logic)
+    if (logoutOptionBottom) {
+        logoutOptionBottom.addEventListener('click', () => {
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        });
     }
 
     const chatsContainer = document.getElementById("chats-container");
