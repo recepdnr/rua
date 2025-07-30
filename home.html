@@ -49,57 +49,23 @@
         font-size: 0.9rem;
     }
 
-    .user-profile {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    .user-welcome {
+        color: var(--accent-color);
+        font-weight: 600;
     }
 
-    .profile-circle {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background-color: var(--accent-color);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .profile-circle span {
-        color: #000;
-        font-size: 18px;
-    }
-
-    .profile-name {
-        font-weight: 500;
-    }
-
-    .profile-dropdown {
-        position: absolute;
-        bottom: -90px;
-        right: 0;
-        background: var(--secondary-color);
+    .logout-btn {
+        background: transparent;
+        color: var(--text-color);
         border: 1px solid var(--secondary-hover-color);
-        border-radius: 8px;
-        padding: 10px 0;
-        width: 150px;
-        display: none;
-        z-index: 1002;
-    }
-
-    .profile-dropdown.active {
-        display: block;
-    }
-
-    .dropdown-item {
-        padding: 8px 15px;
+        padding: 6px 12px;
+        border-radius: 4px;
         cursor: pointer;
-        transition: background 0.2s ease;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
     }
 
-    .dropdown-item:hover {
+    .logout-btn:hover {
         background: var(--secondary-hover-color);
         color: var(--accent-color);
     }
@@ -574,16 +540,8 @@
 <body>
     <!-- User Info Bar -->
     <div class="user-info-bar">
-        <div class="user-profile">
-            <div class="profile-circle" id="profile-circle">
-                <span class="material-symbols-rounded">person</span>
-                <div class="profile-dropdown" id="profile-dropdown">
-                    <div class="dropdown-item" id="settings-btn">Settings</div>
-                    <div class="dropdown-item" id="logout-btn">Log Out</div>
-                </div>
-            </div>
-            <div class="profile-name" id="profile-name">Kullanıcı</div>
-        </div>
+        <div class="user-welcome" id="user-welcome">Hoş geldiniz!</div>
+        <button class="logout-btn" id="logout-btn">Çıkış</button>
     </div>
 
     <!-- Chat Status -->
@@ -658,28 +616,13 @@
             return;
         }
         
-        // Display user profile info
-        const profileName = document.getElementById('profile-name');
-        if (user.name) {
-            profileName.textContent = user.name;
-        } else if (user.email) {
-            profileName.textContent = user.email.split('@')[0];
+        // Display user welcome message
+        const userWelcome = document.getElementById('user-welcome');
+        if (user.email) {
+            userWelcome.textContent = `Hoş geldiniz, ${user.email}!`;
         }
     });
 
-    // Profile dropdown functionality
-    const profileCircle = document.getElementById('profile-circle');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    
-    profileCircle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        profileDropdown.classList.toggle('active');
-    });
-    
-    document.addEventListener('click', () => {
-        profileDropdown.classList.remove('active');
-    });
-    
     // Logout functionality
     document.getElementById('logout-btn').addEventListener('click', () => {
         if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
@@ -687,11 +630,6 @@
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
-    });
-    
-    // Settings functionality
-    document.getElementById('settings-btn').addEventListener('click', () => {
-        alert('Ayarlar sayfası henüz hazır değil.');
     });
 
     const chatsContainer = document.getElementById("chats-container");
